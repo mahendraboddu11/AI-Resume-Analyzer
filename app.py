@@ -1,6 +1,7 @@
 import streamlit as st
 import re
-from difflib import SequenceMatcher
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from PyPDF2 import PdfReader
 
 
@@ -268,13 +269,21 @@ def calculate_similarity(resume_text, job_text):
 
         return 0
 
-    similarity = SequenceMatcher(
-        None,
-        resume_clean,
-        job_clean
-    ).ratio()
+   vectorizer = TfidfVectorizer(
+    stop_words="english",
+    ngram_range=(1, 2)
+)
 
-    return round(similarity * 100)
+tfidf_matrix = vectorizer.fit_transform(
+    [resume_clean, job_clean]
+)
+
+similarity = cosine_similarity(
+    tfidf_matrix[0:1],
+    tfidf_matrix[1:2]
+)[0][0]
+
+return round(similarity * 100)
 
 
 # ============================================================

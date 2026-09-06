@@ -283,12 +283,11 @@ def calculate_similarity(resume_text, job_text):
         word_matrix[1:2]
     )[0][0]
 
-    # Character-level TF-IDF similarity
+    # Character-level similarity
     char_vectorizer = TfidfVectorizer(
-        analyzer="char_wb",
-        ngram_range=(3, 5),
-        min_df=1,
-        sublinear_tf=True
+        analyzer="char",
+        ngram_range=(2, 5),
+        min_df=1
     )
 
     char_matrix = char_vectorizer.fit_transform(
@@ -307,7 +306,6 @@ def calculate_similarity(resume_text, job_text):
     )
 
     return round(similarity * 100)
-
 # ============================================================
 # RESUME SECTION CHECK
 # ============================================================

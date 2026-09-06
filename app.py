@@ -260,25 +260,51 @@ def calculate_skill_score(resume_skills, job_skills):
 # ============================================================
 
 def calculate_similarity(resume_text, job_text):
+
     resume_clean = clean_text(resume_text)
     job_clean = clean_text(job_text)
 
     if not resume_clean or not job_clean:
         return 0
 
-    vectorizer = TfidfVectorizer(
+    # Word-level TF-IDF similarity
+    word_vectorizer = TfidfVectorizer(
         stop_words="english",
-        ngram_range=(1, 2)
+        ngram_range=(1, 2),
+        sublinear_tf=True
     )
 
-    tfidf_matrix = vectorizer.fit_transform(
+    word_matrix = word_vectorizer.fit_transform(
         [resume_clean, job_clean]
     )
 
-    similarity = cosine_similarity(
-        tfidf_matrix[0:1],
-        tfidf_matrix[1:2]
+    word_similarity = cosine_similarity(
+        word_matrix[0:1],
+        word_matrix[1:2]
     )[0][0]
+
+    # Character-level TF-IDF similarity
+    char_vectorizer = TfidfVectorizer(
+        analyzer="char_wb",
+        ngram_range=(3, 5),
+        min_df=1,
+        sublinear_tf=True
+    )
+
+    char_matrix = char_vectorizer.fit_transform(
+        [resume_clean, job_clean]
+    )
+
+    char_similarity = cosine_similarity(
+        char_matrix[0:1],
+        char_matrix[1:2]
+    )[0][0]
+
+    # Combine word and character similarity
+    similarity = (
+        (word_similarity * 0.70) +
+        (char_similarity * 0.30)
+    )
 
     return round(similarity * 100)
 

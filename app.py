@@ -595,11 +595,10 @@ if analyze_button:
     # --------------------------------------------------------
 
     overall_score = round(
-        (similarity_score * 0.30)
-        + (keyword_score * 0.30)
-        + (skill_score * 0.40)
-    )
-
+    (similarity_score * 0.50)
+    + (keyword_score * 0.20)
+    + (skill_score * 0.30)
+)
     # --------------------------------------------------------
     # Resume sections
     # --------------------------------------------------------
